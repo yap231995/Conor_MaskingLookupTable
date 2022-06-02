@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdint.h>
-
+#include <stdbool.h>
 
 int seed = 0;
 int mask_order = 5; //mask order
@@ -114,9 +114,9 @@ int MaskedLookUpTable(uint8_t* message){
 
 // where the execution of program begins
 int main()
-{  // srand(time(NULL));
-    
-    srand(seed);
+{  
+    srand(time(NULL));
+    //srand(seed);
     uint8_t message[mask_order];
     int i;
     for (i = 0; i < sizeof(message); i++) {
@@ -129,6 +129,14 @@ int main()
     }
     printf("] \n");
 
+    uint8_t x = message[0];
+    for (i = 1; i < mask_order; i++) {
+        x = x ^ message[i];
+    }
+    uint8_t input_sbox_value = aes_sbox[x];
+    printf("input sbox: %d\n", input_sbox_value);
+
+
 
     //RefreshMask(message);
     MaskedLookUpTable(message);
@@ -140,6 +148,17 @@ int main()
     printf("] \n");
 
 
+
+    x = message[0];
+    for (i = 1; i < mask_order; i++) {
+        x = x ^ message[i];
+    }
+    uint8_t output_sbox_value = x;
+    printf("output sbox: %d\n", output_sbox_value);
+    
+    bool sbox_true_false = (output_sbox_value == input_sbox_value);
+
+    printf("%s", sbox_true_false ? "true" : "false");
 
 
 
